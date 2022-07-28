@@ -10,7 +10,7 @@ public sealed class SlackAndTrxConfigService
 
     public static SlackAndTrxConfig GetSlackAndTrxConfig()
     {
-        var configName = typeof(SlackAndTrxConfig).Name;
+        const string configName = nameof(SlackAndTrxConfig);
         return ConfigurationRoot.GetSection(configName).Get<SlackAndTrxConfig>();
     }
 

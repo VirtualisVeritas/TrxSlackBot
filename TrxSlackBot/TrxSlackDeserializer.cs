@@ -114,8 +114,8 @@ public static class TrxSlackDeserializer
     {
         var testNameAndFails = testRun.GetFailedTestNameAndError();
         var testCounters = testRun.ResultSummary.Counters;
-        var trxFilePath = "TestResults-Regression-SlrWeb.trx";
-        int index = trxFilePath.IndexOf(".");
+        var trxFilePath = SlackAndTrxConfig.TrxFile;
+        var index = trxFilePath.IndexOf(".", StringComparison.Ordinal);
         if (index >= 0)
             trxFilePath = trxFilePath[..index];
 
