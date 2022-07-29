@@ -1,6 +1,6 @@
 {
   "SlackAndTrxConfig": {
-    "slackWebhookUrl": "",
+    "slackWebhook": "",
     "trxFile": ""
   }
 }
