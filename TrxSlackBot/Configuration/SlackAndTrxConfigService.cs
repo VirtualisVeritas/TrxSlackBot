@@ -5,6 +5,7 @@ namespace TrxSlackBot.Configuration;
 public sealed class SlackAndTrxConfigService
 {
     private static readonly IConfigurationRoot ConfigurationRoot;
+    public static string? ConfigPath { get; set; }
 
     static SlackAndTrxConfigService() => ConfigurationRoot = InitializeConfiguration();
 
@@ -14,12 +15,16 @@ public sealed class SlackAndTrxConfigService
         return ConfigurationRoot.GetSection(configName).Get<SlackAndTrxConfig>();
     }
 
+    public static void SetConfigPath()
+    {
+        ConfigPath = Program.ConfigFile;
+    }
+
     private static IConfigurationRoot InitializeConfiguration()
     {
+        SetConfigPath();
         var builder = new ConfigurationBuilder();
-        var configFileName = "slackAndTrxConfig.json";
-        var configPath = Path.Combine(Environment.CurrentDirectory, configFileName);
-        builder.AddJsonFile(configPath);
+        builder.AddJsonFile(ConfigPath);
         builder.AddEnvironmentVariables();
         return builder.Build();
     }

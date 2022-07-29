@@ -17,10 +17,25 @@ public static class TrxSlackDeserializer
 
     public static TestRun Deserialize(string filePath)
     {
-        RemoveXmlnsAndRewriteFile(filePath);
-        var xs = new XmlSerializer(typeof(TestRun));
-        using Stream sr = File.OpenRead(filePath);
-        return (TestRun)xs.Deserialize(sr)!;
+        try
+        {
+            RemoveXmlnsAndRewriteFile(filePath);
+            var xs = new XmlSerializer(typeof(TestRun));
+            using Stream sr = File.OpenRead(filePath);
+            return (TestRun)xs.Deserialize(sr)!;
+        }
+        catch (Exception e)
+        {
+            if (filePath.Equals(""))
+            {
+                Console.WriteLine("Empty TRX FilePath in Config");
+            }
+            else
+            {
+                Console.WriteLine(e);
+            }
+            throw;
+        }
     }
 
     public static TestRun DeserializeFromConfig() => Deserialize(SlackAndTrxConfig.TrxFile);
@@ -180,10 +195,22 @@ public static class TrxSlackDeserializer
 
     public static async Task SendSlackMessage()
     {
-        var testRunData = DeserializeFromConfig();
-        var webHookUrl = SlackAndTrxConfig.SlackWebhookUrl;
-        var client = new SbmClient(webHookUrl);
-        var slackMessage = testRunData.BuildSlackMessage();
-        await client.SendAsync(slackMessage);
+        try
+        {
+            var webHookUrl = SlackAndTrxConfig.SlackWebhook;
+            if (webHookUrl == null || webHookUrl == "")
+            {
+                Console.WriteLine("No Slack WebHook in config");
+            }
+            var testRunData = DeserializeFromConfig();
+            var client = new SbmClient(webHookUrl);
+            var slackMessage = testRunData.BuildSlackMessage();
+            await client.SendAsync(slackMessage);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }
