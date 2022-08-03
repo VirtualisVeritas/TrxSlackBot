@@ -60,8 +60,7 @@ public static class TrxSlackDeserializer
     public static decimal GetPercentPassed(this TestRun testRun)
     {
         var testCounters = testRun.ResultSummary.Counters;
-        var totalAfterSkipped = testCounters.Total - testCounters.Skipped();
-        var testPercent = (int)((double)totalAfterSkipped / testCounters.Total * 100);
+        var testPercent = (int)((double)testCounters.Passed / testCounters.Executed * 100);
         return testPercent;
     }
 
@@ -106,23 +105,12 @@ public static class TrxSlackDeserializer
     public static string ReceiveSlackMoodColor(this TestRun testRun)
     {
         var percentPassed = testRun.GetPercentPassed();
-
-        if (percentPassed > 85)
+        return percentPassed switch
         {
-            return "good";
-        }
-
-        if (percentPassed > 65 && percentPassed <= 85)
-        {
-            return "warning";
-        }
-
-        if (percentPassed <= 65)
-        {
-            return "danger";
-        }
-
-        return "good";
+            100 => "good",
+            > 65 and < 100 => "warning",
+            <= 65 => "danger"
+        };
     }
 
     public static Message BuildSlackMessage(this TestRun testRun)
@@ -135,7 +123,6 @@ public static class TrxSlackDeserializer
             trxFilePath = trxFilePath[..index];
 
         trxFilePath = trxFilePath[(trxFilePath.LastIndexOf('\\') + 1)..];
-
         var message = new Message(trxFilePath)
         {
             Attachments = new List<Attachment>
