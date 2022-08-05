@@ -134,8 +134,8 @@ public static class TrxSlackDeserializer
                     {
                         new Field
                         {
-                            Title = "For Details Visit",
-                            Value = SlackAndTrxConfig.DetailsLink,
+                            Title = "Test Report",
+                            Value = $"Test Reporting {SlackAndTrxConfig.DetailsLink}",
                             Short = false
                         },
                         new Field
