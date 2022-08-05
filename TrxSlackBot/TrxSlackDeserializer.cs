@@ -134,6 +134,12 @@ public static class TrxSlackDeserializer
                     {
                         new Field
                         {
+                            Title = "For Details Visit",
+                            Value = SlackAndTrxConfig.DetailsLink,
+                            Short = true
+                        },
+                        new Field
+                        {
                             Title = "Total Tests: " + testCounters.Total +
                                     $" -  {testRun.GetPercentPassed()}%",
                             Value = "",
