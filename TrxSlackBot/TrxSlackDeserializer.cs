@@ -136,7 +136,7 @@ public static class TrxSlackDeserializer
                         {
                             Title = "For Details Visit",
                             Value = SlackAndTrxConfig.DetailsLink,
-                            Short = true
+                            Short = false
                         },
                         new Field
                         {
