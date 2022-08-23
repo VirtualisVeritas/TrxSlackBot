@@ -83,8 +83,9 @@ public static class TrxSlackDeserializer
         var allFailedData = 
             testRun.Results.UnitTestResults.Where(x => x.Outcome.Equals("Failed"));
 
-        return allFailedData.ToDictionary(dataSet => 
-            dataSet.TestName, dataSet => dataSet.Output.ErrorInfo.Message);
+        return allFailedData.ToDictionary(
+            testResult => testResult.TestName, 
+            testResult => testResult.Output.ErrorInfo.Message);
     }
 
     public static string GetTestNameAndErrorMessage(this TestRun testRun)
@@ -148,34 +149,28 @@ public static class TrxSlackDeserializer
                         new Field
                         {
                             Title = "Test Run Infos",
-                            Value = $"Tests Executed: {testCounters.Total}\n\n " +
-                                    $"{Emoji.AlarmClock} Test Duration: {GetDuration(testRun)} Minutes",
+                            Value = $"A total of {testCounters.Total} tests executed within {GetDuration(testRun)} Minutes",
+                            Short = false
+                        },
+                        new Field
+                        {
+                            Title = $"{Emoji.WhiteCheckMark} Passed: {testCounters.Passed} | Pass Rate: {testRun.GetPercentPassed()}%",
                             Short = false
                         },
                         new Field
                         {
                             Title = $":screwdriver: Skipped Tests: {testCounters.Skipped()}",
+                            Short = true
+                        },
+                        new Field
+                        {
+                            Title = $"{Emoji.Fire} Failed: {testCounters.Failed} | Fail Rate: {testRun.GetPercentFailed()}%",
                             Short = false
                         },
                         new Field
                         {
-                            Title = $"{Emoji.WhiteCheckMark} Passed: {testCounters.Passed}",
-                            Value = $"Pass Rate {testRun.GetPercentPassed()}",
-                            Short = false
-                        },
-                        new Field
-                        {
-                            Title = $"{Emoji.Fire} Failed: {testCounters.Failed}",
-                            Value = $"Fail Rate {testRun.GetPercentFailed()}",
-                            Short = false
-                        },
-                        new Field
-                        {
-                            Title = $"{Emoji.X} Failed Test Details:\n\n\n",
-                            Value = string.Join("\n\n",
-                                testNameAndFails.Select(x =>
-                                        $"Test *{x.Key}*" + "\n\n*Error:* " + $"```{x.Value}```" + " ")
-                                    .ToArray()),
+                            Title = ":firecracker: Failed Test Details:",
+                            Value = string.Join("\n\n", testNameAndFails.Select(x => $"_Test Name:_ *{x.Key}* \n\n _Error Message:_ ```{x.Value}``` ").ToArray()),
                             Short = false
                         }
                     }
