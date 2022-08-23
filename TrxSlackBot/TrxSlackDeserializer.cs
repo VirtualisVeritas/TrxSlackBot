@@ -100,7 +100,7 @@ public static class TrxSlackDeserializer
             }
             else
             {
-                myStringBuilder.Append(";");
+                myStringBuilder.Append(';');
             }
 
             myStringBuilder.AppendFormat($"Failed Test Name: {pair.Key} Failed Test Error {pair.Value}");
