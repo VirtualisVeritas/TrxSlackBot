@@ -64,6 +64,13 @@ public static class TrxSlackDeserializer
         return testPercent;
     }
 
+    public static decimal GetPercentFailed(this TestRun testRun)
+    {
+        var testCounters = testRun.ResultSummary.Counters;
+        var testPercent = (int)((double)testCounters.Failed / testCounters.Executed * 100);
+        return testPercent;
+    }
+
     public static List<string> GetErrorMessagesOfFailedTest(this TestRun testRun)
     {
         return testRun.Results.UnitTestResults
@@ -134,50 +141,42 @@ public static class TrxSlackDeserializer
                     {
                         new Field
                         {
-                            Title = "Test Report",
-                            Value = $"Test Reporting {SlackAndTrxConfig.DetailsLink}",
+                            Title = "Detailed TestRun Report with Error Screenshots",
+                            Value = $"{SlackAndTrxConfig.DetailsLink}",
                             Short = false
                         },
                         new Field
                         {
-                            Title = "Total Tests: " + testCounters.Total +
-                                    $" -  {testRun.GetPercentPassed()}%",
-                            Value = "",
-                            Short = true
+                            Title = "Test Run Infos",
+                            Value = $"Tests Executed: {testCounters.Total}\n\n " +
+                                    $"{Emoji.AlarmClock} Test Duration: {GetDuration(testRun)} Minutes",
+                            Short = false
                         },
                         new Field
                         {
-                            Title = ":screwdriver:" + " Skipped: " + $"{testCounters.Skipped()}",
-                            Value = "",
-                            Short = true
+                            Title = $":screwdriver: Skipped Tests: {testCounters.Skipped()}",
+                            Short = false
                         },
                         new Field
                         {
-                            Title = Emoji.WhiteCheckMark + " Passed: " + $"{testCounters.Passed}",
-                            Value = "",
-                            Short = true
+                            Title = $"{Emoji.WhiteCheckMark} Passed: {testCounters.Passed}",
+                            Value = $"Pass Rate {testRun.GetPercentPassed()}",
+                            Short = false
                         },
                         new Field
                         {
-                            Title = Emoji.Warning + " Failed: " + $" {testCounters.Failed}",
-                            Value = "",
-                            Short = true
+                            Title = $"{Emoji.Fire} Failed: {testCounters.Failed}",
+                            Value = $"Fail Rate {testRun.GetPercentFailed()}",
+                            Short = false
                         },
                         new Field
                         {
-                            Title = Emoji.AlarmClock + " Duration: " + $"{GetDuration(testRun)} Minutes",
-                            Value = "",
-                            Short = true
-                        },
-
-                        new Field
-                        {
-                            Title = Emoji.X + " Failed Test Details:\n\n\n",
+                            Title = $"{Emoji.X} Failed Test Details:\n\n\n",
                             Value = string.Join("\n\n",
                                 testNameAndFails.Select(x =>
-                                        $"*Test {x.Key}*" + "\n\n*Error Message:* " + $"```{x.Value}```" + " ")
+                                        $"Test *{x.Key}*" + "\n\n*Error:* " + $"```{x.Value}```" + " ")
                                     .ToArray()),
-                            Short = true
+                            Short = false
                         }
                     }
                 }
