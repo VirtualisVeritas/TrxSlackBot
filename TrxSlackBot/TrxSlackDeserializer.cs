@@ -113,22 +113,28 @@ public static class TrxSlackDeserializer
             <= 65 => "danger"
         };
     }
+    public static string ReceiveMessageTitle()
+    {
+        var messageTitle = SlackAndTrxConfig.MessageTitle;
+        if (string.IsNullOrEmpty(messageTitle))
+        {
+            messageTitle = SlackAndTrxConfig.TrxFile;
+            var index = messageTitle.IndexOf(".", StringComparison.Ordinal);
+            if (index >= 0) messageTitle = messageTitle[..index];
+            messageTitle = messageTitle[(messageTitle.LastIndexOf('\\') + 1)..];
+        }
+        return messageTitle;
+    }
 
     public static Message BuildSlackMessage(this TestRun testRun)
     {
         var testNameAndFails = testRun.GetFailedTestNameAndError();
         var testCounters = testRun.ResultSummary.Counters;
-        var trxFilePath = SlackAndTrxConfig.TrxFile;
-        var index = trxFilePath.IndexOf(".", StringComparison.Ordinal);
-        if (index >= 0)
-            trxFilePath = trxFilePath[..index];
-
-        trxFilePath = trxFilePath[(trxFilePath.LastIndexOf('\\') + 1)..];
-        var message = new Message(trxFilePath)
+        var message = new Message(ReceiveMessageTitle())
         {
             Attachments = new List<Attachment>
             {
-                new Attachment
+                new()
                 {
                     Color = ReceiveSlackMoodColor(testRun),
                     Fields = new List<Field>

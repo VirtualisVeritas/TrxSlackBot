@@ -2,6 +2,7 @@
   "SlackAndTrxConfig": {
     "slackWebhook": "",
     "trxFile": "",
-    "detailsLink": "" 
+    "detailsLink": "",
+    "messageTitle":  "" 
   }
 }
