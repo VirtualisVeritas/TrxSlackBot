@@ -148,28 +148,23 @@ public static class TrxSlackDeserializer
                         new Field
                         {
                             Title = $"Test Run Infos (Tests Available: {testCounters.Total})",
-                            Value = $"Tests executed {testCounters.Executed} within {GetDuration(testRun)} Minutes",
+                            Value = $"*{testCounters.Executed}* Tests executed within *{GetDuration(testRun)}* Minutes",
                             Short = false
                         },
                         new Field
                         {
-                            Title = $"{Emoji.WhiteCheckMark} Passed: {testCounters.Passed} | Pass Rate: {testRun.GetPercentPassed()}%",
+                            Title = $"{Emoji.WhiteCheckMark} Passed: *{testCounters.Passed}* ({testRun.GetPercentPassed()}%)",
                             Short = false
                         },
                         new Field
                         {
-                            Title = $":screwdriver: Skipped Tests: {testCounters.Skipped()}",
+                            Title = $":screwdriver: Skipped: *{testCounters.Skipped()}*",
                             Short = true
                         },
                         new Field
                         {
-                            Title = $"{Emoji.Fire} Failed: {testCounters.Failed}",
-                            Short = false
-                        },
-                        new Field
-                        {
-                            Title = ":firecracker: Failed Test Details:",
-                            Value = string.Join("\n\n", testNameAndFails.Select(x => $"_Test Name:_ *{x.Key}* \n\n _Error Message:_ ```{x.Value}``` ").ToArray()),
+                            Title = $"{Emoji.Fire} Failed: *{testCounters.Failed}*",
+                            Value = "Failed Test Details: \n\n" + string.Join("\n\n", testNameAndFails.Select(x => $"_Test Name:_ *{x.Key}* \n\n ```{x.Value}``` ").ToArray()),
                             Short = false
                         }
                     }
