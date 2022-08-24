@@ -178,7 +178,7 @@ public static class TrxSlackDeserializer
         try
         {
             var webHookUrl = SlackAndTrxConfig.SlackWebhook;
-            if (webHookUrl == null || webHookUrl == "")
+            if (string.IsNullOrEmpty(webHookUrl))
             {
                 Console.WriteLine("No Slack WebHook in config");
             }
