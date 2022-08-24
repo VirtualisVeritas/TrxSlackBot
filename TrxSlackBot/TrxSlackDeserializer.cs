@@ -64,13 +64,6 @@ public static class TrxSlackDeserializer
         return testPercent;
     }
 
-    public static decimal GetPercentFailed(this TestRun testRun)
-    {
-        var testCounters = testRun.ResultSummary.Counters;
-        var testPercent = (int)((double)testCounters.Failed / testCounters.Executed * 100);
-        return testPercent;
-    }
-
     public static List<string> GetErrorMessagesOfFailedTest(this TestRun testRun)
     {
         return testRun.Results.UnitTestResults
@@ -148,8 +141,8 @@ public static class TrxSlackDeserializer
                         },
                         new Field
                         {
-                            Title = "Test Run Infos",
-                            Value = $"A total of {testCounters.Total} tests executed within {GetDuration(testRun)} Minutes",
+                            Title = $"Test Run Infos (Tests Available: {testCounters.Total})",
+                            Value = $"Tests executed {testCounters.Executed} within {GetDuration(testRun)} Minutes",
                             Short = false
                         },
                         new Field
@@ -164,7 +157,7 @@ public static class TrxSlackDeserializer
                         },
                         new Field
                         {
-                            Title = $"{Emoji.Fire} Failed: {testCounters.Failed} | Fail Rate: {testRun.GetPercentFailed()}%",
+                            Title = $"{Emoji.Fire} Failed: {testCounters.Failed}",
                             Short = false
                         },
                         new Field
