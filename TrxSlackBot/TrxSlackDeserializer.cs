@@ -76,8 +76,9 @@ public static class TrxSlackDeserializer
         var allFailedData = 
             testRun.Results.UnitTestResults.Where(x => x.Outcome.Equals("Failed"));
 
-        return allFailedData.ToDictionary(dataSet => 
-            dataSet.TestName, dataSet => dataSet.Output.ErrorInfo.Message);
+        return allFailedData.ToDictionary(
+            testResult => testResult.TestName, 
+            testResult => testResult.Output.ErrorInfo.Message);
     }
 
     public static string GetTestNameAndErrorMessage(this TestRun testRun)
@@ -93,7 +94,7 @@ public static class TrxSlackDeserializer
             }
             else
             {
-                myStringBuilder.Append(";");
+                myStringBuilder.Append(';');
             }
 
             myStringBuilder.AppendFormat($"Failed Test Name: {pair.Key} Failed Test Error {pair.Value}");
@@ -112,72 +113,59 @@ public static class TrxSlackDeserializer
             <= 65 => "danger"
         };
     }
+    public static string ReceiveMessageTitle()
+    {
+        var messageTitle = SlackAndTrxConfig.MessageTitle;
+        if (string.IsNullOrEmpty(messageTitle))
+        {
+            messageTitle = SlackAndTrxConfig.TrxFile;
+            var index = messageTitle.IndexOf(".", StringComparison.Ordinal);
+            if (index >= 0) messageTitle = messageTitle[..index];
+            messageTitle = messageTitle[(messageTitle.LastIndexOf('\\') + 1)..];
+        }
+        return messageTitle;
+    }
 
     public static Message BuildSlackMessage(this TestRun testRun)
     {
         var testNameAndFails = testRun.GetFailedTestNameAndError();
         var testCounters = testRun.ResultSummary.Counters;
-        var trxFilePath = SlackAndTrxConfig.TrxFile;
-        var index = trxFilePath.IndexOf(".", StringComparison.Ordinal);
-        if (index >= 0)
-            trxFilePath = trxFilePath[..index];
-
-        trxFilePath = trxFilePath[(trxFilePath.LastIndexOf('\\') + 1)..];
-        var message = new Message(trxFilePath)
+        var message = new Message(ReceiveMessageTitle())
         {
             Attachments = new List<Attachment>
             {
-                new Attachment
+                new()
                 {
                     Color = ReceiveSlackMoodColor(testRun),
                     Fields = new List<Field>
                     {
                         new Field
                         {
-                            Title = "Test Report",
-                            Value = $"Test Reporting {SlackAndTrxConfig.DetailsLink}",
+                            Title = "Detailed TestRun Report with Error Screenshots",
+                            Value = $"{SlackAndTrxConfig.DetailsLink}",
                             Short = false
                         },
                         new Field
                         {
-                            Title = "Total Tests: " + testCounters.Total +
-                                    $" -  {testRun.GetPercentPassed()}%",
-                            Value = "",
+                            Title = $"Test Run Infos (Tests Available: {testCounters.Total})",
+                            Value = $"*{testCounters.Executed}* Tests executed within *{GetDuration(testRun)}* Minutes",
+                            Short = false
+                        },
+                        new Field
+                        {
+                            Title = $"{Emoji.WhiteCheckMark} Passed: *{testCounters.Passed}* ({testRun.GetPercentPassed()}%)",
+                            Short = false
+                        },
+                        new Field
+                        {
+                            Title = $":screwdriver: Skipped: *{testCounters.Skipped()}*",
                             Short = true
                         },
                         new Field
                         {
-                            Title = ":screwdriver:" + " Skipped: " + $"{testCounters.Skipped()}",
-                            Value = "",
-                            Short = true
-                        },
-                        new Field
-                        {
-                            Title = Emoji.WhiteCheckMark + " Passed: " + $"{testCounters.Passed}",
-                            Value = "",
-                            Short = true
-                        },
-                        new Field
-                        {
-                            Title = Emoji.Warning + " Failed: " + $" {testCounters.Failed}",
-                            Value = "",
-                            Short = true
-                        },
-                        new Field
-                        {
-                            Title = Emoji.AlarmClock + " Duration: " + $"{GetDuration(testRun)} Minutes",
-                            Value = "",
-                            Short = true
-                        },
-
-                        new Field
-                        {
-                            Title = Emoji.X + " Failed Test Details:\n\n\n",
-                            Value = string.Join("\n\n",
-                                testNameAndFails.Select(x =>
-                                        $"*Test {x.Key}*" + "\n\n*Error Message:* " + $"```{x.Value}```" + " ")
-                                    .ToArray()),
-                            Short = true
+                            Title = $"{Emoji.Fire} Failed: *{testCounters.Failed}*",
+                            Value = "Failed Test Details: \n\n" + string.Join("\n\n", testNameAndFails.Select(x => $"_Test Name:_ *{x.Key}* \n\n ```{x.Value}``` ").ToArray()),
+                            Short = false
                         }
                     }
                 }
@@ -191,7 +179,7 @@ public static class TrxSlackDeserializer
         try
         {
             var webHookUrl = SlackAndTrxConfig.SlackWebhook;
-            if (webHookUrl == null || webHookUrl == "")
+            if (string.IsNullOrEmpty(webHookUrl))
             {
                 Console.WriteLine("No Slack WebHook in config");
             }
