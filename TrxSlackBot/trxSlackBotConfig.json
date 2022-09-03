@@ -1,0 +1,16 @@
+{
+  "TrxSlackBotConfig": {
+    "slackWebhook": "",
+    "slackBearerToken": "",
+    "trxFile": "",
+    "detailsLink": "",
+    "ConfigMessageTitle": "",
+    "sendOnlyIfRunHasFails": false,
+    "sendFailsAsReply": false,
+    "channelId": "",
+    "replyMessageTsId": "",
+    "replyText": "",
+    "waitSecondsAfterMessageBeforeReply": 0,
+    "sendFailsAsCodeSnipped": false
+  }
+}
