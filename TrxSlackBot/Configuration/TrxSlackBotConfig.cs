@@ -15,8 +15,12 @@ public class TrxSlackBotConfig
     public string? ReplyText { get; set; }
     public double WaitSecondsAfterMessageBeforeReply { get; set; }
     public bool SendFailsAsCodeSnipped { get; set; }
+    public string? SnippedInitialComment { get; set; }
+    public string? SnippedSlackFileName { get; set; }
+    public string? SnippedSlackFilePostTitle { get; set; }
+    public string? SnippedSlackFileType { get; set; }
 
-    public static TrxSlackBotConfig SlackBotConfigData = TrxSlackBotConfigService.GetTrxSlackBotConfig();
+    internal static TrxSlackBotConfig SlackBotConfigData = TrxSlackBotConfigService.GetTrxSlackBotConfig();
 
     public string? ReceiveMessageTitleFromConfig()
     {

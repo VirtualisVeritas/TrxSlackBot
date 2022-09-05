@@ -274,19 +274,25 @@ public static class SlackMessageBuilder
         string.Join("", trxTestRun.GetFailedTestNameAndError()
             .Select(x => $"{x.Key} \n{x.Value}").ToArray());
 
-    /// ToDo: Currently in Development
     public static KeyValuePair<string, string>[] BuildCodeSnippedMessage()
     {
         var testRunData = TrxFileDeserializer.GetTrxTestRunFromConfig();
+        var fileType = SlackAndTrxConfig.SnippedSlackFileType;
+
+        if (string.IsNullOrEmpty(fileType))
+        {
+            fileType = "json";
+        }
+
         return new SlackFiles
         {
             SlackToken = SlackAndTrxConfig.SlackBearerToken,
-            InitialComment = "DEBUG - Initial Comment",
+            InitialComment = SlackAndTrxConfig.SnippedInitialComment,
             SlackChannels = SlackAndTrxConfig.ChannelId,
             SlackFileContent = testRunData.BuildFailedTestString(),
-            SlackFileType = FileType.JSon.ToDescriptionString(),
-            SlackFileName = "DEBUG TestFileName",
-            SlackFilePostTitle = "DEBUG PostTitle",
+            SlackFileType = fileType,
+            SlackFileName = SlackAndTrxConfig.SnippedSlackFileName,
+            SlackFilePostTitle = SlackAndTrxConfig.SnippedSlackFilePostTitle,
             SlackFile = "" // either this or content
         }.GenerateSlackFile();
     }
@@ -295,6 +301,13 @@ public static class SlackMessageBuilder
     {
         var testRunData = TrxFileDeserializer.GetTrxTestRunFromConfig();
         var messageTsId = SlackAndTrxConfig.ReplyMessageTsId;
+        var fileType = SlackAndTrxConfig.SnippedSlackFileType;
+
+        if (string.IsNullOrEmpty(fileType))
+        {
+            fileType = "json";
+        }
+
         if (string.IsNullOrEmpty(messageTsId))
         {
             messageTsId = await GetLatestSlackMessageTsId(SlackAndTrxConfig.ChannelId, SlackAndTrxConfig.SlackBearerToken);
@@ -303,12 +316,12 @@ public static class SlackMessageBuilder
         return new SlackFiles
         {
             SlackToken = SlackAndTrxConfig.SlackBearerToken,
-            InitialComment = "DEBUG - Initial Comment",
+            InitialComment = SlackAndTrxConfig.SnippedInitialComment,
             SlackChannels = SlackAndTrxConfig.ChannelId,
             SlackFileContent = testRunData.BuildFailedTestString(),
-            SlackFileType = FileType.JSon.ToDescriptionString(),
-            SlackFileName = "DEBUG TestFileName",
-            SlackFilePostTitle = "DEBUG PostTitle",
+            SlackFileType = fileType,
+            SlackFileName = SlackAndTrxConfig.SnippedSlackFileName,
+            SlackFilePostTitle = SlackAndTrxConfig.SnippedSlackFilePostTitle,
             ThreadTs = messageTsId,
             SlackFile = "" // either this or content
         }.GenerateSlackFile();

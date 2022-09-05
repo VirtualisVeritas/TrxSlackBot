@@ -11,6 +11,10 @@
     "replyMessageTsId": "",
     "replyText": "",
     "waitSecondsAfterMessageBeforeReply": 0,
-    "sendFailsAsCodeSnipped": false
+    "sendFailsAsCodeSnipped": false,
+    "snippedInitialComment": "",
+    "snippedSlackFileName": "",
+    "snippedSlackFilePostTitle": "",
+    "snippedSlackFileType": ""
   }
 }

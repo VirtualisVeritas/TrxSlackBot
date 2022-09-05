@@ -64,13 +64,30 @@ public static class SlackCommunication
 
             if (!TrxSlackBotConfig.SlackBotConfigData.SendOnlyIfRunHasFails)
             {
+                if (!TrxSlackBotConfig.SlackBotConfigData.SendFailsAsReply && !TrxSlackBotConfig.SlackBotConfigData.SendFailsAsCodeSnipped && SlackMessageBuilder.FailedTestCount > 0)
+                {
+                    slackMessage = testRunData.BuildSlackMessageWithDetails();
+                }
+
                 await client.SendAsync(slackMessage);
 
-                if (TrxSlackBotConfig.SlackBotConfigData.SendFailsAsReply)
+                if (TrxSlackBotConfig.SlackBotConfigData.SendFailsAsReply && !TrxSlackBotConfig.SlackBotConfigData.SendFailsAsCodeSnipped)
                 {
                     var waitSeconds = TrxSlackBotConfig.SlackBotConfigData.WaitSecondsAfterMessageBeforeReply;
                     Thread.Sleep(TimeSpan.FromSeconds(waitSeconds));
                     await SendFailedAsSlackReply();
+                }
+
+                if (!TrxSlackBotConfig.SlackBotConfigData.SendFailsAsReply && TrxSlackBotConfig.SlackBotConfigData.SendFailsAsCodeSnipped)
+                {
+                    await SendFailedAsSlackSnipped();
+                }
+
+                if (TrxSlackBotConfig.SlackBotConfigData.SendFailsAsReply && TrxSlackBotConfig.SlackBotConfigData.SendFailsAsCodeSnipped)
+                {
+                    var waitSeconds = TrxSlackBotConfig.SlackBotConfigData.WaitSecondsAfterMessageBeforeReply;
+                    Thread.Sleep(TimeSpan.FromSeconds(waitSeconds));
+                    await SendFailedAsSlackReplySnipped();
                 }
             }
 
