@@ -7,7 +7,8 @@ public class TrxSlackBotConfig
     public string? TrxFile { get; set; }
     public string? DetailsLink { get; set; }
     public static string? ConfigMessageTitle { get; set; }
-    public string? MessageTitle => ReceiveMessageTitleFromConfig();
+    public bool SendDetailedMessageAsReply { get; set; }
+    public double SendDetailedMessageAsReplyWaitSecondsForMessage { get; set; }
     public bool SendOnlyIfRunHasFails { get; set; }
     public bool SendFailsAsReply { get; set; }
     public string? ChannelId { get; set; }
@@ -19,6 +20,8 @@ public class TrxSlackBotConfig
     public string? SnippedSlackFileName { get; set; }
     public string? SnippedSlackFilePostTitle { get; set; }
     public string? SnippedSlackFileType { get; set; }
+
+    public string? MessageTitle => ReceiveMessageTitleFromConfig();
 
     internal static TrxSlackBotConfig SlackBotConfigData = TrxSlackBotConfigService.GetTrxSlackBotConfig();
 
