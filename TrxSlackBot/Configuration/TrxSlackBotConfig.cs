@@ -3,6 +3,7 @@
 public class TrxSlackBotConfig
 {
     public string SlackWebhook { get; set; }
+    public string? HealthCheckWebhook { get; set; }
     public string? SlackBearerToken { get; set; }
     public string? TrxFile { get; set; }
     public string? DetailsLink { get; set; }

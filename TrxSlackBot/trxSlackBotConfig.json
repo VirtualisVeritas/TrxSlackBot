@@ -1,6 +1,7 @@
 {
   "TrxSlackBotConfig": {
     "slackWebhook": "",
+    "healthCheckWebhook": "",
     "slackBearerToken": "",
     "trxFile": "",
     "detailsLink": "",
