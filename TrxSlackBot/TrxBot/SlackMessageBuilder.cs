@@ -1,13 +1,13 @@
 ﻿using System.Globalization;
 using System.Text;
-using System.Threading;
 using SlackBotMessages;
-using SlackBotMessages.Enums;
 using SlackBotMessages.Models;
 using TrxSlackBot.Configuration;
 using TrxSlackBot.TrxFileModels;
 
 namespace TrxSlackBot.TrxBot;
+
+// ToDo: Restructure Methods with Parameters instead of Separate Methods that all do the same
 
 public static class SlackMessageBuilder
 {
@@ -249,27 +249,6 @@ public static class SlackMessageBuilder
         }
     }
     
-    public static async Task SendFailedAsSlackReply()
-    {
-        try
-        {
-            var testRunData = TrxFileDeserializer.GetTrxTestRunFromConfig();
-            var webHookUrl = SlackAndTrxConfig.SlackWebhook;
-            if (string.IsNullOrEmpty(webHookUrl))
-            {
-                Console.WriteLine("No Slack WebHook in config");
-            }
-            var client = new SbmClient(webHookUrl);
-            var messageReply = await BuildFailedMessageReply(testRunData);
-            await client.SendAsync(messageReply);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
     public static string BuildFailedTestString(this TrxTestRun trxTestRun) => 
         string.Join("", trxTestRun.GetFailedTestNameAndError()
             .Select(x => $"{x.Key} \n{x.Value}").ToArray());

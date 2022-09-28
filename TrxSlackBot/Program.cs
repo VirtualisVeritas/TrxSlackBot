@@ -11,12 +11,11 @@ public static class Program
         try
         {
             ConfigFile = args.Length != 0 ? args[0] : Path.Combine(Environment.CurrentDirectory, "trxSlackBotConfig.json");
+            await SlackCommunication.SendSlackMessage();
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
-
-        await SlackCommunication.SendSlackMessage();
     }
 }

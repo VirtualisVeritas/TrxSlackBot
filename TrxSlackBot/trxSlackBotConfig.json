@@ -1,20 +1,23 @@
 {
   "TrxSlackBotConfig": {
     "slackWebhook": "",
+    "healthCheckWebhook": "",
     "slackBearerToken": "",
     "trxFile": "",
     "detailsLink": "",
     "ConfigMessageTitle": "",
+    "sendDetailedMessageAsReply": false,
+    "sendDetailedMessageAsReplyWaitSecondsForMessage": 0,
     "sendOnlyIfRunHasFails": false,
     "sendFailsAsReply": false,
     "channelId": "",
     "replyMessageTsId": "",
     "replyText": "",
-    "waitSecondsAfterMessageBeforeReply": 0,
+    "waitSecondsAfterMessageBeforeReply": 1,
     "sendFailsAsCodeSnipped": false,
     "snippedInitialComment": "",
     "snippedSlackFileName": "",
     "snippedSlackFilePostTitle": "",
-    "snippedSlackFileType": ""
+    "snippedSlackFileType": "xml"
   }
 }
