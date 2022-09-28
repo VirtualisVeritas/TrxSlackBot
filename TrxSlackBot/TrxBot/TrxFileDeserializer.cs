@@ -18,9 +18,13 @@ public static class TrxFileDeserializer
         try
         {
             var rgx = new Regex("xmlns=\".*?\" ?");
-            var fileContent = rgx.Replace(File.ReadAllText(filePath), string.Empty);
-            var xDoc = XDocument.Parse(fileContent);
-            xDoc.Save(filePath);
+            var file = File.ReadAllText(filePath);
+            if (rgx.IsMatch(file))
+            {
+                var fileContent = rgx.Replace(file, string.Empty);
+                var xDoc = XDocument.Parse(fileContent);
+                xDoc.Save(filePath);
+            }
         }
         catch (Exception)
         {

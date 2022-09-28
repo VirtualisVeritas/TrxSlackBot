@@ -12,7 +12,6 @@ namespace TrxSlackBot.TrxBot;
 public static class SlackMessageBuilder
 {
     public static int FailedTestCount { get; set; }
-
     private static readonly TrxSlackBotConfig SlackAndTrxConfig = TrxSlackBotConfigService.GetTrxSlackBotConfig();
     
     public static string GetDuration(this TrxTestRun trxTestRun)
